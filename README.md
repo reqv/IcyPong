@@ -1,6 +1,6 @@
-IcePong
+IcyPong
 ========
 
-IcePong is a simple program based on the popular pong game, but include 
+IcyPong is a simple program based on the popular pong game, but include 
 some new stuff.<br>
 Writen in C++ and SFML libary.<br>
