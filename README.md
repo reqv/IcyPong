@@ -1,4 +1,6 @@
 IcePong
 ========
 
-IcePong is a simple game based on the popular pong game, but include some new stuff.<br>
+IcePong is a simple program based on the popular pong game, but include 
+some new stuff.<br>
+Writen in C++ and SFML libary.<br>

@@ -1,6 +1,4 @@
 #include "core.hpp"
-//#include <iostream>
-//#include <stdio.h>
 
 int engine::load()
 {
@@ -76,11 +74,9 @@ void engine::playthegame(int players)
     int score2=0;
     int pause=1;
 
-    //sf::Clock clock_1;
     sf::Clock cl_main;
     sf::Clock clock_2bonus;
     int bonus_text;
-    bool drawmessage = false;
     std::string lastmsg = "none";
 //#################################################################### TEXT EDIT
     sf::Text wynik1;
@@ -101,6 +97,7 @@ void engine::playthegame(int players)
     info.setColor(sf::Color(200,0,0));
     info.setString("none");
     */
+    MM = new messageMenager(2,&infofont);
 //#################################################################### USTAWIENIE ELEMENTOW
     player1->position.x = Wwidth/2 - (player1->width/2);
     player1->position.y = Wheight-player1->height;
@@ -217,7 +214,7 @@ void engine::playthegame(int players)
         if(ball->position.y <= (-ball->height*2))
         {
             score1++;
-            info.setString(player1->name+" scored!");
+            MM->nowa(player1->name+" scored!");
             ball->position.x = player2->position.x - (player2->width/2) - (ball->width/2);
             ball->position.y = player2->height + ball->height;
             wynik1.setString(ToString(score1));
@@ -226,7 +223,7 @@ void engine::playthegame(int players)
         else
             {
                 score2++;
-                info.setString(player2->name+" scored!");
+                MM->nowa(player2->name+" scored!");
                 ball->position.x = player1->position.x+player1->width/2-ball->width/2;
                 ball->position.y = Wheight - player1->height - (ball->height*2);
                 wynik2.setString(ToString(score2));
@@ -290,29 +287,6 @@ void engine::playthegame(int players)
         }
         clock_2bonus.restart();
     }
-//#################################################################### Wiadomosci
-    /*if(!drawmessage && (std::string)info.getString() != "none")
-    {
-        clock_1.restart();
-        drawmessage = true;
-        lastmsg = info.getString();
-    }
-    if(drawmessage && clock_1.getElapsedTime().asSeconds() < 1.2)
-        info.setPosition(sf::Vector2f(info.getPosition().x,info.getPosition().y-1));
-    if(drawmessage && clock_1.getElapsedTime().asSeconds() > 1.2)
-    {
-        info.setPosition(sf::Vector2f(info.getPosition().x,Wheight/2+20));
-        if(lastmsg == info.getString())
-        {
-            drawmessage = false;
-            info.setString("none");
-        }
-        else
-        {
-            clock_1.restart();
-            lastmsg = info.getString();
-        }
-    }*/
 //#################################################################### Drawing
     cl_main.restart();
     ball->looks.setPosition(ball->position.x,ball->position.y);
@@ -346,7 +320,8 @@ void engine::playthegame(int players)
     window->draw(player1->looks);
     window->draw(player2->looks);
     if(bonus_pack != NULL)window->draw(bonus_pack->looks);
-    if(drawmessage)window->draw(info);
+    //if(drawmessage)window->draw(info);
+    MM->wyswietl(window);
     window->display();
     //std::cout<<1/cl_main.getElapsedTime().asSeconds()<<std::endl;
     FPS = 1/cl_main.getElapsedTime().asSeconds();
@@ -361,7 +336,9 @@ void engine::playthegame(int players)
     {
         endofgame(player2->name);
     }
-
+    //Reset Menadzera Wiadomosci
+    MM->clean();
+    delete(MM);
     //Reset pilki
     ball->odbicie();
 

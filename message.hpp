@@ -7,12 +7,14 @@ class message
 {
     public:
         sf::String getText();
+        float getTime();
+        int getID();
         message(sf::String what_mess,int what_id,long what_time);
         message *next = NULL;
     private:
         int id;
         sf::String text;
-        long time;
+        float time;
 };
 
 class messageMenager
@@ -21,12 +23,13 @@ class messageMenager
         messageMenager(int how_long,sf::Font *czcionka);
         void nowa(sf::String wiadomosc);
         void wyswietl(sf::RenderWindow *ekran);
+        void clean();
     private:
         int time;
-        int lastid=0;
+        int globalID=0;
         sf::Clock *zegar = NULL;
         sf::Font *font = NULL;
-        message *first_mess = NULL;
+        message *kolejka = NULL;
 };
 
 #endif
