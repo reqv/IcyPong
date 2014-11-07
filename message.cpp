@@ -1,21 +1,21 @@
 #include "message.hpp"
-#include <stdio.h>
-#include <iostream>
-
-#include "core.hpp"
 
 //############################################################################# MANAGER
-messageMenager::messageMenager(int how_long,sf::Font *czcionka) //inicjacja menagera
+messageMenager::messageMenager(int how_long,sf::Font *czcionka,int font_w) //inicjacja menagera
 {
+    font_wt = font_w;
     time = how_long;
     font = czcionka;
     zegar = new sf::Clock;
-    std::cout<<"Hello! Its MM !"<<std::endl;
+    //ustawienia stringa
+    text = new sf::Text;
+    text->setFont(*font);
+    text->setCharacterSize(font_wt);
 }
 
-void messageMenager::nowa(sf::String wiadomosc) //Utworzene nowej wiadomosci
+void messageMenager::nowa(sf::String wiadomosc,int type,int posx,int posy) //Utworzene nowej wiadomosci
 {
-    message* nowa = new message(wiadomosc,globalID,zegar->getElapsedTime().asSeconds()+time);
+    message* nowa = new message(wiadomosc,globalID,zegar->getElapsedTime().asSeconds()+time,type);
     nowa->next = kolejka;
     kolejka = nowa;
     globalID++;
@@ -25,12 +25,10 @@ void messageMenager::wyswietl(sf::RenderWindow *ekran)  //wyswietlenie wszystkic
 {
     if(kolejka == NULL) //jak nic nie ma
     {
-        std::cout<<"reset"<<std::endl;
         zegar->restart();
         globalID=0;
         return;
     }
-    std::string lolo;
     //PIERWSZY (czy do usuniecia)
     if(zegar->getElapsedTime().asSeconds() > kolejka->getTime())
     {
@@ -47,8 +45,51 @@ void messageMenager::wyswietl(sf::RenderWindow *ekran)  //wyswietlenie wszystkic
             delete(kolejka->next);
             kolejka->next = NULL;
         }
-        lolo = kolejka->getText().toAnsiString();
-        std::cout<<lolo<<std::endl;
+        //############### wyswietl napis
+        text->setString(kolejka->getText());
+        //ustalenie pozycji
+        if(kolejka->pos.x == 0 && kolejka->pos.y == 0)
+        {
+            kolejka->pos.x = ekran->getSize().x/2;
+            kolejka->pos.y = ekran->getSize().y/2;
+        }
+        text->setPosition(kolejka->pos.x - (kolejka->howManyChars/2*font_wt),kolejka->pos.y - (font_wt/2));
+        //okresl typ wiadomosci
+        switch(kolejka->getType())
+        {
+            case 3:
+                if(!kolejka->stored)
+                {
+                    kolejka->pos.x -= 5;
+                    kolejka->pos.y += 5;
+                    kolejka->stored = true;
+                }
+                else
+                {
+
+                    kolejka->pos.x += 5;
+                    kolejka->pos.y -= 5;
+                    kolejka->stored = false;
+                }
+                text->setColor(sf::Color::Magenta);
+                text->setStyle(sf::Text::Italic | sf::Text::Bold);
+                break;
+            case 1:
+                text->setColor(sf::Color::Blue);
+                text->setStyle(sf::Text::Bold);
+            break;
+            case 0:
+            default:
+                if(!kolejka->stored)
+                {
+                    kolejka->pos.y-=100;
+                    kolejka->stored = true;
+                }else
+                    kolejka->pos.y+=0.5;
+                text->setColor(sf::Color::Red);
+                text->setStyle(sf::Text::Bold);
+        }
+        ekran->draw(*text);
         kolejka = kolejka->next;
     }
     kolejka = start;
@@ -65,12 +106,16 @@ void messageMenager::clean()
         kolejka = tmp;
     }
     delete(kolejka);
+    delete(text);
+    font = NULL;
 }
 //############################################################################# MESSAGES
-message::message(sf::String what_mess,int what_id,long what_time)   //Format wiadomosci
+message::message(sf::String what_mess,int what_id,long what_time,int T)   //Format wiadomosci
 {
     text = what_mess;
     time = what_time;
+    type = T;
+    howManyChars = what_mess.getSize();
     id=what_id;
 }
 
@@ -90,4 +135,9 @@ float message::getTime()   //wiadomosc zwraca czas zakonczenia
 int message::getID()   //wiadomosc zwraca ID
 {
     return id;
+}
+
+int message::getType()   //wiadomosc zwraca swoj typ
+{
+    return type;
 }

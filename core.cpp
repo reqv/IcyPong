@@ -77,7 +77,6 @@ void engine::playthegame(int players)
     sf::Clock cl_main;
     sf::Clock clock_2bonus;
     int bonus_text;
-    std::string lastmsg = "none";
 //#################################################################### TEXT EDIT
     sf::Text wynik1;
     sf::Text wynik2;
@@ -91,12 +90,6 @@ void engine::playthegame(int players)
     wynik2.setColor(sf::Color::Black);
     wynik2.setString("0");
 
-    sf::Text info;
-    info.setFont(infofont);
-    /*info.setPosition(Wwidth/4,Wheight/2+20);
-    info.setColor(sf::Color(200,0,0));
-    info.setString("none");
-    */
     MM = new messageMenager(2,&infofont);
 //#################################################################### USTAWIENIE ELEMENTOW
     player1->position.x = Wwidth/2 - (player1->width/2);
@@ -248,14 +241,14 @@ void engine::playthegame(int players)
                             score1 = score2;
                             wynik1.setString(ToString(score1));
                         }
-                        info.setString("Balance!");
+                        MM->nowa("Balance!",3);
                         break;
                     case 3:
                         //ball->odbicie(ball->kat_odbicia);
                         //ball->speed_Up(ball->speed*2);
-                        info.setString("UltraBALL");
+                        MM->nowa("UltraBALL",3);
                         break;
-                    default: info.setString("empty...");
+                    default: MM->nowa("*.: EMPTY CREATE :.",3);
                 }
                 delete(bonus_pack);
                 bonus_pack = NULL;
@@ -270,13 +263,13 @@ void engine::playthegame(int players)
             bonus_text = los(1,7);
             switch(bonus_text)
             {
-                case 1: info.setString("Finish HIM!"); break;
-                case 2: info.setString("Tiny gift 4U"); break;
-                case 3: info.setString("Arm yourself!"); break;
-                case 4: info.setString("Catch this!"); break;
-                case 5: info.setString("Handle this!"); break;
-                case 6: info.setString("Crush your enemy!"); break;
-                case 7: info.setString("Straigh!"); break;
+                case 1: MM->nowa("Finish HIM!",1); break;
+                case 2: MM->nowa("Tiny gift 4U",1); break;
+                case 3: MM->nowa("Arm yourself!",1); break;
+                case 4: MM->nowa("Catch this!",1); break;
+                case 5: MM->nowa("Handle this!",1); break;
+                case 6: MM->nowa("Crush your enemy!",1); break;
+                case 7: MM->nowa("Straigh!",1); break;
             }
             bonus_pack = new bonus(&bonus_img,los(0,6),los(50,Wwidth-70),los(50,Wheight-70));
         }
@@ -320,10 +313,8 @@ void engine::playthegame(int players)
     window->draw(player1->looks);
     window->draw(player2->looks);
     if(bonus_pack != NULL)window->draw(bonus_pack->looks);
-    //if(drawmessage)window->draw(info);
     MM->wyswietl(window);
     window->display();
-    //std::cout<<1/cl_main.getElapsedTime().asSeconds()<<std::endl;
     FPS = 1/cl_main.getElapsedTime().asSeconds();
 //####################################################################
     }
