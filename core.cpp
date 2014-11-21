@@ -164,6 +164,19 @@ void engine::playthegame(int players)
             }
         }
 //#################################################################### Ustawianie elementow
+    //## USTAWIENIE PILKI ##
+    if(pause == 0)
+    {
+        if(ball->kierunek_x == 0)
+            ball->position.x -= ball->kat_odbicia/FPS;
+        else
+            ball->position.x += ball->kat_odbicia/FPS;
+        if(ball->kierunek_y == 0)
+            ball->position.y += ball->speed/FPS;
+        else
+            ball->position.y -= ball->speed/FPS;
+    }
+
     //## USTAWIENIE PALETEK ##
     if(player1->czylewo == true)
         player1->position.x = player1->position.x-(player1->speed/FPS);
@@ -185,18 +198,6 @@ void engine::playthegame(int players)
     if(player2->position.x-player2->width < 0)player2->position.x = player2->width;
     if(player2->position.x > Wwidth)player2->position.x = Wwidth;
 
-    //## USTAWIENIE PILKI ##
-    if(pause == 0)
-    {
-        if(ball->kierunek_x == 0)
-            ball->position.x -= ball->kat_odbicia/FPS;
-        else
-            ball->position.x += ball->kat_odbicia/FPS;
-        if(ball->kierunek_y == 0)
-            ball->position.y += ball->speed/FPS;
-        else
-            ball->position.y -= ball->speed/FPS;
-    }
     //## USTAWIENIA DOTYCZACE PUNKTACJI ##
     if(ball->position.y <= (-ball->height*2) || ball->position.y >= (Wheight - ball->height + (ball->height*2)))
     {
@@ -241,14 +242,19 @@ void engine::playthegame(int players)
                             score1 = score2;
                             wynik1.setString(ToString(score1));
                         }
-                        MM->nowa("Balance!",3);
+                        MM->nowa("Balance!",3,ball->position.x,ball->position.y);
                         break;
                     case 3:
-                        //ball->odbicie(ball->kat_odbicia);
-                        //ball->speed_Up(ball->speed*2);
-                        MM->nowa("UltraBALL",3);
+                    case 4:
+                        ball->speed_Up(ball->speed*2);
+                        MM->nowa("UltraBALL",3,ball->position.x,ball->position.y);
                         break;
-                    default: MM->nowa("*.: EMPTY CREATE :.",3);
+                    case 9:
+                    case 10:
+                        ball->speed_Up(0);
+                        MM->nowa("Slow Down",3,ball->position.x,ball->position.y);
+                        break;
+                    default: MM->nowa(".:EMPTY:.",3,ball->position.x,ball->position.y);
                 }
                 delete(bonus_pack);
                 bonus_pack = NULL;
@@ -267,11 +273,11 @@ void engine::playthegame(int players)
                 case 2: MM->nowa("Tiny gift 4U",1); break;
                 case 3: MM->nowa("Arm yourself!",1); break;
                 case 4: MM->nowa("Catch this!",1); break;
-                case 5: MM->nowa("Handle this!",1); break;
+                case 5: MM->nowa("Take it!",1); break;
                 case 6: MM->nowa("Crush your enemy!",1); break;
                 case 7: MM->nowa("Straigh!",1); break;
             }
-            bonus_pack = new bonus(&bonus_img,los(0,6),los(50,Wwidth-70),los(50,Wheight-70));
+            bonus_pack = new bonus(&bonus_img,los(0,10),los(50,Wwidth-70),los(50,Wheight-70));
         }
         else
         {
@@ -287,33 +293,40 @@ void engine::playthegame(int players)
     player2->looks.setPosition(player2->position.x,player2->position.y);
 
     //## Draw ##//
-    window->clear(sf::Color::White);
-
+    window->clear(sf::Color(235,247,247));
+    //-- black line
     sf::RectangleShape line(sf::Vector2f(Wwidth-120,2));
-    line.setFillColor(sf::Color::Black);
+    line.setFillColor(sf::Color(0,0,0,150));
     line.setPosition(60,(Wheight/2));
     window->draw(line);
-
+    //-- red lines
     line.setSize(sf::Vector2f(Wwidth-200,1));
-    line.setFillColor(sf::Color::Red);
+    line.setFillColor(sf::Color(220,35,66,150));
     line.setPosition(100,(player2->height*3));
     window->draw(line);
     line.setFillColor(sf::Color::Red);
     line.setPosition(100,Wheight - (player1->height*3));
     window->draw(line);
+    //-- circle
     sf::CircleShape circle(50);
-    circle.setOutlineThickness(1);
-    circle.setOutlineColor(sf::Color::Black);
+    circle.setOutlineThickness(2);
+    circle.setFillColor(sf::Color(255,255,255));
+    circle.setOutlineColor(sf::Color(0,0,0,150));
     circle.setPosition(Wwidth/2-50,Wheight/2-50);
     window->draw(circle);
-
+    //-- point
+    //sf::CircleShape point(4);
+    //point.setPosition(Wwidth/2-2,Wheight/2-2);
+    //point.setFillColor(sf::Color(0,0,0,100));
+    //window->draw(point);
+    //-- DONE --
     window->draw(wynik1);
     window->draw(wynik2);
     window->draw(ball->looks);
     window->draw(player1->looks);
     window->draw(player2->looks);
     if(bonus_pack != NULL)window->draw(bonus_pack->looks);
-    MM->wyswietl(window);
+    MM->wyswietl(window);   //wyswietlenie wszystkich napisow
     window->display();
     FPS = 1/cl_main.getElapsedTime().asSeconds();
 //####################################################################

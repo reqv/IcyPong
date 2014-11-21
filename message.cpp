@@ -16,6 +16,8 @@ messageMenager::messageMenager(int how_long,sf::Font *czcionka,int font_w) //ini
 void messageMenager::nowa(sf::String wiadomosc,int type,int posx,int posy) //Utworzene nowej wiadomosci
 {
     message* nowa = new message(wiadomosc,globalID,zegar->getElapsedTime().asSeconds()+time,type);
+    nowa->pos.x = posx;
+    nowa->pos.y = posy;
     nowa->next = kolejka;
     kolejka = nowa;
     globalID++;
@@ -54,6 +56,8 @@ void messageMenager::wyswietl(sf::RenderWindow *ekran)  //wyswietlenie wszystkic
             kolejka->pos.y = ekran->getSize().y/2;
         }
         text->setPosition(kolejka->pos.x - (kolejka->howManyChars/2*font_wt),kolejka->pos.y - (font_wt/2));
+        if(text->getPosition().x < 0)text->setPosition(0,text->getPosition().y);
+        if(text->getPosition().x > ekran->getSize().x)text->setPosition(text->getPosition().x - (text->getPosition().x - ekran->getSize().x),text->getPosition().y);
         //okresl typ wiadomosci
         switch(kolejka->getType())
         {
