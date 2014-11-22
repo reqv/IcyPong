@@ -57,7 +57,7 @@ void messageMenager::wyswietl(sf::RenderWindow *ekran)  //wyswietlenie wszystkic
         }
         text->setPosition(kolejka->pos.x - (kolejka->howManyChars/2*font_wt),kolejka->pos.y - (font_wt/2));
         if(text->getPosition().x < 0)text->setPosition(0,text->getPosition().y);
-        if(text->getPosition().x > ekran->getSize().x)text->setPosition(text->getPosition().x - (text->getPosition().x - ekran->getSize().x),text->getPosition().y);
+        if(text->getPosition().x > ekran->getSize().x)text->setPosition(text->getPosition().x - 10 - (text->getPosition().x - ekran->getSize().x),text->getPosition().y);
         //okresl typ wiadomosci
         switch(kolejka->getType())
         {
