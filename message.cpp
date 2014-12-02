@@ -61,6 +61,10 @@ void messageMenager::wyswietl(sf::RenderWindow *ekran)  //wyswietlenie wszystkic
         //okresl typ wiadomosci
         switch(kolejka->getType())
         {
+            case 100:
+                text->setColor(sf::Color::Yellow);
+                text->setStyle(sf::Text::Bold);
+            break;
             case 3:
                 if(!kolejka->stored)
                 {
@@ -77,7 +81,7 @@ void messageMenager::wyswietl(sf::RenderWindow *ekran)  //wyswietlenie wszystkic
                 }
                 text->setColor(sf::Color::Magenta);
                 text->setStyle(sf::Text::Italic | sf::Text::Bold);
-                break;
+            break;
             case 1:
                 text->setColor(sf::Color::Blue);
                 text->setStyle(sf::Text::Bold);

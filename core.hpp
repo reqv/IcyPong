@@ -14,6 +14,7 @@ private:
     sf::Texture pilka_img;
     sf::Texture deska_img;
     sf::Texture bonus_img;
+    sf::Texture win_img;
     sf::Font basefont;
     sf::Font infofont;
     //#############################

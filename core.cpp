@@ -8,6 +8,9 @@ int engine::load()
         return 12;
     if(!bonus_img.loadFromFile("data/img/bonus.png"))
         return 13;
+    if(!win_img.loadFromFile("data/img/win.png"))
+        return 14;
+
     if(!basefont.loadFromFile("data/font.ttf"))
         return 21;
     if(!infofont.loadFromFile("data/font.ttf"))
@@ -24,12 +27,11 @@ int engine::load()
     player2->looks.setTexture(deska_img);
     player2->looks.rotate(180);
 
-    //ball = new pilka(10,10,7.0);
     ball = new pilka(10,10,500);
     if(ball == NULL)return 33;
     ball->looks.setTexture(pilka_img);
 
-    this->go(0,800,600);
+    this->go(1,800,600);
     return 0;
 }
 
@@ -42,6 +44,10 @@ void engine::go(int fullscreen,int width,int height)
     window->setFramerateLimit(Framerate);
     Wwidth = window->getSize().x;
     Wheight = window->getSize().y;
+    MM = new messageMenager(50,&basefont,10);
+    MM->nowa("Press (1) to play with computer or press (2) to play with friend",100,0,10);
+    MM->nowa("Keys: 'wsad' for player 1 and 'arrows' for player 2 - (space) starts a game",100,0,25);
+    MM->nowa("Press (ESC) to quit",100,0,40);
 
     while (window->isOpen())
     {
@@ -63,6 +69,7 @@ void engine::go(int fullscreen,int width,int height)
         }
 
         window->clear();
+        MM->wyswietl(window);
         window->display();
     }
 }
@@ -86,7 +93,7 @@ void engine::playthegame(int players)
     wynik1.setString("0");
 
     wynik2.setFont(basefont);
-    wynik2.setPosition(Wwidth - 50,Wheight/2 - 20);
+    wynik2.setPosition(Wwidth - 40,Wheight/2 - 20);
     wynik2.setColor(sf::Color::Black);
     wynik2.setString("0");
 
@@ -314,11 +321,13 @@ void engine::playthegame(int players)
     circle.setOutlineColor(sf::Color(0,0,0,150));
     circle.setPosition(Wwidth/2-50,Wheight/2-50);
     window->draw(circle);
-    //-- point
-    //sf::CircleShape point(4);
-    //point.setPosition(Wwidth/2-2,Wheight/2-2);
-    //point.setFillColor(sf::Color(0,0,0,100));
-    //window->draw(point);
+    //-- side panels
+    sf::RectangleShape side(sf::Vector2f(50,Wheight/2-20));
+    side.setFillColor(sf::Color(0,0,0,210));
+    side.setPosition(0,Wheight/2+25);
+    window->draw(side);
+    side.setPosition(Wwidth-50,0);
+    window->draw(side);
     //-- DONE --
     window->draw(wynik1);
     window->draw(wynik2);
@@ -364,18 +373,23 @@ void engine::playthegame(int players)
 
 void engine::endofgame(std::string winer)
 {
-    //## KONFIGURACJA NAPISOW ##//
-    sf::Text napis;
-    napis.setFont(basefont);
-    napis.setCharacterSize(24);
-    napis.setPosition(window->getSize().x/2,window->getSize().y/2);
-    napis.setColor(sf::Color::Yellow);
-    napis.setString(winer+" won!");
+    int i=0;
+    MM = new messageMenager(3,&basefont,32);
+    sf::Sprite winIMAGE;
+    winIMAGE.setTexture(win_img);
+    winIMAGE.setPosition(Wwidth/4, Wheight/2-100);
     //##########################//
-    window->clear(sf::Color::Black);
-    window->draw(napis);
-    window->display();
-    sf::sleep(sf::seconds(3));
+    while(i < 4)
+    {
+        window->clear(sf::Color::Black);
+        MM->wyswietl(window);
+        window->draw(winIMAGE);
+        window->display();
+        sf::sleep(sf::seconds(1));
+        i++;
+        if(i == 1)MM->nowa(winer,100,Wwidth/4 + 300,Wheight/2-16);
+        if(i == 2)MM->nowa(" won!",100,Wwidth/4 + 350,Wheight/2+50);
+    }
 }
 
 int engine::los(int min_l,int max_l)
