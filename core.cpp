@@ -31,7 +31,7 @@ int engine::load()
     if(ball == NULL)return 33;
     ball->looks.setTexture(pilka_img);
 
-    this->go(1,800,600);
+    this->go(0,800,600);
     return 0;
 }
 
@@ -44,10 +44,11 @@ void engine::go(int fullscreen,int width,int height)
     window->setFramerateLimit(Framerate);
     Wwidth = window->getSize().x;
     Wheight = window->getSize().y;
-    MM = new messageMenager(50,&basefont,10);
-    MM->nowa("Press (1) to play with computer or press (2) to play with friend",100,0,10);
-    MM->nowa("Keys: 'wsad' for player 1 and 'arrows' for player 2 - (space) starts a game",100,0,25);
-    MM->nowa("Press (ESC) to quit",100,0,40);
+    messageMenager local_ME(50,&basefont,10);
+    local_ME.nowa("Press (1) to play with computer",100,0,10);
+    local_ME.nowa("Press (2) to play with friend",100,0,25);
+    local_ME.nowa("Keys: 'wsad' for P1 and 'arrows' for P2 - (space) starts the game",100,0,40);
+    local_ME.nowa("Press (ESC) to quit",100,0,55);
 
     while (window->isOpen())
     {
@@ -69,9 +70,10 @@ void engine::go(int fullscreen,int width,int height)
         }
 
         window->clear();
-        MM->wyswietl(window);
+        local_ME.wyswietl(window);
         window->display();
     }
+    local_ME.clean();
 }
 
 void engine::playthegame(int players)
@@ -374,7 +376,7 @@ void engine::playthegame(int players)
 void engine::endofgame(std::string winer)
 {
     int i=0;
-    MM = new messageMenager(3,&basefont,32);
+    messageMenager ME(3,&basefont,32);
     sf::Sprite winIMAGE;
     winIMAGE.setTexture(win_img);
     winIMAGE.setPosition(Wwidth/4, Wheight/2-100);
@@ -382,14 +384,15 @@ void engine::endofgame(std::string winer)
     while(i < 4)
     {
         window->clear(sf::Color::Black);
-        MM->wyswietl(window);
+        ME.wyswietl(window);
         window->draw(winIMAGE);
         window->display();
         sf::sleep(sf::seconds(1));
         i++;
-        if(i == 1)MM->nowa(winer,100,Wwidth/4 + 300,Wheight/2-16);
-        if(i == 2)MM->nowa(" won!",100,Wwidth/4 + 350,Wheight/2+50);
+        if(i == 1)ME.nowa(winer,100,Wwidth/4 + 300,Wheight/2-16);
+        if(i == 2)ME.nowa(" won!",100,Wwidth/4 + 350,Wheight/2+50);
     }
+    ME.clean();
 }
 
 int engine::los(int min_l,int max_l)
