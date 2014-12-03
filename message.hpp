@@ -26,7 +26,7 @@ class message
 class messageMenager
 {
     public:
-        messageMenager(int how_long,sf::Font *czcionka,int font_w = 22);
+        messageMenager(int how_long,sf::Font *czcionka,int font_w = 22,bool st = false);
         void nowa(sf::String wiadomosc,int type=0,int posx=0,int posy=0);
         void wyswietl(sf::RenderWindow *ekran);
         void clean();
@@ -34,6 +34,7 @@ class messageMenager
         int time;
         int font_wt;
         int globalID=0;
+        bool stable;
         sf::Clock *zegar = NULL;
         sf::Font *font = NULL;
         sf::Text *text = NULL;

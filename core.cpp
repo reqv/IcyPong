@@ -18,11 +18,11 @@ int engine::load()
 
     srand(time(0));
 
-    player1 = new deska(78,17,500,"Gracz 1");
+    player1 = new deska(78,17,500,"Player 1");
     if(player1 == NULL)return 31;
     player1->looks.setTexture(deska_img);
 
-    player2 = new deska(78,17,500,"Gracz 2");
+    player2 = new deska(78,17,500,"Player 2");
     if(player2 == NULL)return 32;
     player2->looks.setTexture(deska_img);
     player2->looks.rotate(180);
@@ -44,11 +44,11 @@ void engine::go(int fullscreen,int width,int height)
     window->setFramerateLimit(Framerate);
     Wwidth = window->getSize().x;
     Wheight = window->getSize().y;
-    messageMenager local_ME(50,&basefont,10);
+    messageMenager local_ME(2,&basefont,10,true);
     local_ME.nowa("Press (1) to play with computer",100,0,10);
     local_ME.nowa("Press (2) to play with friend",100,0,25);
-    local_ME.nowa("Keys: 'wsad' for P1 and 'arrows' for P2 - (space) starts the game",100,0,40);
-    local_ME.nowa("Press (ESC) to quit",100,0,55);
+    local_ME.nowa("Press (ESC) to quit",100,0,40);
+    local_ME.nowa("Keys: 'wsad' for P1 and 'arrows' for P2 - (space) starts the game",100,0,Wheight-15);
 
     while (window->isOpen())
     {
@@ -126,6 +126,7 @@ void engine::playthegame(int players)
     //is game running ?
     bool running = true;
 //========================================== start ===========================================
+MM->nowa("Let`s Play",50);
 //#################################################################### handle Events
     while (window->isOpen() && running == true && score1 < doilu && score2 < doilu)
     {
@@ -253,9 +254,16 @@ void engine::playthegame(int players)
                         }
                         MM->nowa("Balance!",3,ball->position.x,ball->position.y);
                         break;
+                    case 7:
+                        if(ball->kierunek_y == 1)ball->kierunek_y = 0;
+                            else
+                                ball->kierunek_y = 1;
+                        MM->nowa("Deceiver!",3,ball->position.x,ball->position.y);
+                        break;
                     case 3:
                     case 4:
                         ball->speed_Up(ball->speed*2);
+                        ball->odbicie(250);
                         MM->nowa("UltraBALL",3,ball->position.x,ball->position.y);
                         break;
                     case 9:
@@ -318,6 +326,7 @@ void engine::playthegame(int players)
     window->draw(line);
     //-- circle
     sf::CircleShape circle(50);
+    circle.setPointCount(1000);
     circle.setOutlineThickness(2);
     circle.setFillColor(sf::Color(255,255,255));
     circle.setOutlineColor(sf::Color(0,0,0,150));
@@ -325,10 +334,14 @@ void engine::playthegame(int players)
     window->draw(circle);
     //-- side panels
     sf::RectangleShape side(sf::Vector2f(50,Wheight/2-20));
-    side.setFillColor(sf::Color(0,0,0,210));
+    side.setFillColor(sf::Color(0,0,0,180));
     side.setPosition(0,Wheight/2+25);
     window->draw(side);
     side.setPosition(Wwidth-50,0);
+    window->draw(side);
+    side.setPosition(0,0);
+    window->draw(side);
+    side.setPosition(Wwidth-50,Wheight/2+25);
     window->draw(side);
     //-- DONE --
     window->draw(wynik1);

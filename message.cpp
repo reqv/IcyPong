@@ -1,8 +1,9 @@
 #include "message.hpp"
 
 //############################################################################# MANAGER
-messageMenager::messageMenager(int how_long,sf::Font *czcionka,int font_w) //inicjacja menagera
+messageMenager::messageMenager(int how_long,sf::Font *czcionka,int font_w,bool st) //inicjacja menagera
 {
+    stable = st;
     font_wt = font_w;
     time = how_long;
     font = czcionka;
@@ -31,6 +32,7 @@ void messageMenager::wyswietl(sf::RenderWindow *ekran)  //wyswietlenie wszystkic
         globalID=0;
         return;
     }
+    if(stable == true)zegar->restart();
     //PIERWSZY (czy do usuniecia)
     if(zegar->getElapsedTime().asSeconds() > kolejka->getTime())
     {
@@ -61,6 +63,19 @@ void messageMenager::wyswietl(sf::RenderWindow *ekran)  //wyswietlenie wszystkic
         //okresl typ wiadomosci
         switch(kolejka->getType())
         {
+            case 50:
+                text->setStyle(sf::Text::Bold);
+                if(kolejka->stored)
+                {
+                    text->setColor(sf::Color::Red);
+                    kolejka->stored = false;
+                }
+                else
+                {
+                    text->setColor(sf::Color::Blue);
+                    kolejka->stored = true;
+                }
+            break;
             case 100:
                 text->setColor(sf::Color::Yellow);
                 text->setStyle(sf::Text::Bold);
