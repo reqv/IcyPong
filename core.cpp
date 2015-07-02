@@ -18,7 +18,7 @@ int engine::load()
 
     srand(time(0));
 
-    player1 = new deska(78,17,500,"Player 1");
+    player1 = new deska(78,17,500,"player 1");
     if(player1 == NULL)return 31;
     player1->looks.setTexture(deska_img);
 
