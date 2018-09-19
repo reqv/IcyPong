@@ -11,7 +11,7 @@ IcyPong is a simple program based on the popular pong game, but include some new
 - Bonuses
 
 ### Dependencies
-SFML library version 2.0 or later. You cen get it from [Official Site](https://www.sfml-dev.org/).
+SFML library version 2.0 or later. You can get it from [Official Site](https://www.sfml-dev.org/).
 
 ### How to use this application
 
